@@ -1,0 +1,4 @@
+---
+prometheus_directory: /srv/prometheus
+prometheus_version: 0.17.0
+prometheus_collectd_port: 25826

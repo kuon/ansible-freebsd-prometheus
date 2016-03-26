@@ -1,0 +1,9 @@
+#!/bin/sh
+
+cd {{ prometheus_directory }}
+
+
+exec 2>&1
+exec chpst -u prometheus ./collectd_exporter \
+-collectd.listen-address=":{{ prometheus_collectd_port }}" \
+-web.listen-address=":9103"

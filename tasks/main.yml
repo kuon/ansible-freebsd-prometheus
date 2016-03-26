@@ -1,0 +1,38 @@
+- name: Stop services
+  command: sv stop {{ item }}
+  ignore_errors: true
+  tags: config
+  with_items:
+  - prometheus
+  - collectd_exporter
+
+- name: Create zfs prometheus fs
+  zfs: name=zroot{{ prometheus_directory }} state=present
+
+- name: Create a prometheus user
+  user: name=prometheus state=present
+
+- name: Check if prometheus is present
+  command: ls {{ prometheus_directory }}/.ansible-installed
+  register: prometheus_installed
+  ignore_errors: true
+
+- include: prometheus.yml
+  when: prometheus_installed | failed
+
+- include: prometheus_config.yml
+
+- include: collectd_exporter.yml
+
+
+- name: Set owner of tree
+  file: path={{ prometheus_directory }} owner=prometheus recurse=true state=directory
+
+- name: Start services
+  command: sv start {{ item }}
+  ignore_errors: true
+  tags: config
+  with_items:
+  - prometheus
+  - collectd_exporter
+

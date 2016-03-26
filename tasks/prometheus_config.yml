@@ -1,0 +1,5 @@
+- name: Copy prometheus configuration
+  template: src=config/prometheus.yml dest={{ prometheus_directory }}/prometheus.yml
+  tags: config
+
+

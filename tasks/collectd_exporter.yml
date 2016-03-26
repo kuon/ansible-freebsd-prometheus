@@ -1,0 +1,10 @@
+- name: Copy collectd_exporter
+  copy: src=bin/collectd_exporter.freebsd.amd64 dest={{ prometheus_directory }}/collectd_exporter mode=0700
+
+- name: Create service dir
+  file: path=/var/service/collectd_exporter state=directory
+
+- name: Copy service file
+  template: src=service/collectd_exporter.run dest=/var/service/collectd_exporter/run mode=0700
+
+

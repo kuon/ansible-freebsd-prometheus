@@ -1,0 +1,37 @@
+- shell: ls -1d {{ prometheus_directory }}/*
+  ignore_errors: true
+  register: dir_name
+  
+- name: Remove old install
+  file: state=absent dest={{item}}
+  with_items: dir_name.stdout_lines
+  when: dir_name | success
+
+- name: Download prometheus
+  get_url: url=https://github.com/prometheus/prometheus/releases/download/{{ prometheus_version }}/prometheus-{{ prometheus_version }}.freebsd-amd64.tar.gz dest={{ prometheus_directory }}/prometheus.tar.gz
+
+- name: Unarchive prometheus
+  unarchive: src={{ prometheus_directory }}/prometheus.tar.gz copy=no dest={{ prometheus_directory }}
+
+- shell: ls -1d {{ prometheus_directory }}/prometheus-{{ prometheus_version }}.freebsd-amd64/*
+  register: dir_name
+
+- name: Move things into place
+  command: mv {{item}} {{ prometheus_directory }}
+  with_items: dir_name.stdout_lines
+
+- name: Remove install dir
+  file: state=absent dest={{ prometheus_directory }}/prometheus-{{ prometheus_version }}.freebsd-amd64/
+
+- name: Remove install archive
+  file: state=absent dest={{ prometheus_directory }}/prometheus.tar.gz
+
+- name: Create service dir
+  file: path=/var/service/prometheus state=directory
+
+- name: Copy service file
+  template: src=service/prometheus.run dest=/var/service/prometheus/run mode=0700
+
+
+- name: Mark as installed
+  file: state=touch dest={{ prometheus_directory }}/.ansible-installed
