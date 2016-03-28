@@ -4,8 +4,7 @@ FreeBSD-prometheus
 Install prometheus and collectd exporter.
 
 
-This role contains a minimal default prometheus config, you will want to override it with a
-templates named `config/prometheus.yml`.
+This role contains a minimal default prometheus config, you will want to override it.
 
 
 **DISCLAIMER**: This role has been created for my personal use and come with
@@ -26,6 +25,7 @@ Role Variables
 - `prometheus_directory`, install directory of prometheus, default to `/srv/prometheus`.
 - `prometheus_version`, version of prometheus to install, default to `0.17.0`.
 - `prometheus_collectd_port`, port of the collectd network listener, default to `25826`.
+- `prometheus_custom_config`, custom config file path to be used instead of the default one.
 
 
 License
